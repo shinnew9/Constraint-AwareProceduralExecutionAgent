@@ -76,20 +76,25 @@ The final output consists of 5 sequential video clips representing the full "Ram
 
 <br>
 
-### 📊 Current Project Status (Mid-term Evaluation)
-
-As of March 2026, the **CAPEA** project has successfully implemented the core end-to-end pipeline and is currently entering the domain-specific optimization phase.
-
-| Phase | Milestone | Status | Description |
+### 📊 Mid-term Progress Report
+#### 1. Current Development Status
+| Phase | Task | Status | Details |
 | :--- | :--- | :--- | :--- |
-| **Phase 1** | **Logic Engine** | **Completed (100%)** | Natural Instructions → Action Graph (DAG) parsing via LLM. |
-| **Phase 2** | **Constraint Scheduling** | **Completed (100%)** | Resource conflict resolution & Temporal timeline generation. |
-| **Phase 3** | **Generative Pipeline** | **Completed (100%)** | Baseline T2I2V (Text-to-Image-to-Video) flow with POV-consistency. |
-| **Phase 4** | **Data & Domain Adaptation**| **In Progress (30%)** | Dataset acquisition (EPIC-KITCHENS/YouCook2) & LoRA Preprocessing. |
-| **Phase 5** | **System Integration** | **Pending (0%)** | Final integration of Custom LoRA into the production pipeline. |
+| **Phase 1** | **Logic Engine** | **Completed** | Successfully parsing instructions into Constraint-Aware DAGs. |
+| **Phase 2** | **Scheduling** | **Completed** | Resource conflict resolution and temporal timeline generation. |
+| **Phase 3** | **Baseline Pipeline** | **Completed** | E2E flow from Text to 1st-person POV Video (T2I2V) is operational. |
+| **Phase 4** | **Data Engineering** | **In Progress** | Acquiring and preprocessing Top-down POV datasets (EPIC-KITCHENS/YouCook2). |
+| **Phase 5** | **Optimization** | **Pending** | Integration of Custom LoRA to ensure visual consistency and realism. |
 
----
-**Current Focus:** Standardizing the dataset for LoRA Fine-tuning to enhance visual realism and structural consistency of the 1st-person kitchen environment.
+#### 2. Technical Milestones Achieved
+* **Dynamic Resource Scheduling**: Implemented a scheduling logic that prioritizes stove-top tasks (e.g., boiling water) while parallelizing preparation tasks (e.g., chopping).
+* **1st-Person Perspective Optimization**: Refined prompt engineering to maintain a consistent "Top-down POV" across all generated visual assets.
+* **Memory-Efficient Architecture**: Developed a sequential VRAM management system to run heavy diffusion models on 11GB hardware (RTX 2080 Ti).
+
+### 3. Future Roadmap (Post Mid-term)
+* **Custom LoRA Fine-tuning**: We are currently curating a high-resolution "Top-down POV" culinary dataset. This will be used to train a domain-specific LoRA to ensure the environment (kitchen, lighting, tools) remains consistent across all simulation steps.
+* **Enhanced Visual Fidelity**: Transitioning from generic food images to professional-grade culinary simulation outputs.
+* **Instruction-to-Action Accuracy**: Improving the alignment between natural language nuances and the final generated video frames.
 
 <br>
 
