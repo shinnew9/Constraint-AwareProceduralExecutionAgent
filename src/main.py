@@ -24,6 +24,13 @@ def main():
         time_range = f"{step['start']}s - {step['end']}s"
         print(f"{time_range:<15} | {step['action']:<25} | {step['resource']}")
 
+    final_dish_step = {
+        'id': 5,
+        'action': 'serve dish',
+        'resource': 'dining_table'
+    }
+    final_schedule.append(final_dish_step)
+
     print("\nStep 3: Generating Video Sequence...")
     simulate_video_rendering(final_schedule)
 
