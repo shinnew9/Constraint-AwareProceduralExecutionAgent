@@ -1,25 +1,5 @@
-This project focuses on generating structured procedural plans under explicit temporal and resource constraints. A language or vision-language model is used only to parse natural instructions into structured representations. The core contribution lies in constraint-aware execution modeling and feasibility verification.
-
-
-
-
-<br>
-Skeleton: <br>
-Natural Language Instruction <br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ↓ <br>
-Structured Action Graph <br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ↓ <br>
-Constraint-aware Execution Simulation <br>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ↓ <br>
-Feasibility Verification + Visualization
-
-
-
-<br>
-<br>
-<br>
-<br>
-
+## 🍜 CAPEA: Constraint-Aware Procedural Execution Agent
+CAPEA is an advanced AI agent designed to bridge the gap between high-level natural language instructions and logically grounded, multi-stage visual simulations. It doesn't just "generate videos"—it understands constraints, plans resources, and executes a full cooking pipeline from a first-person perspective.
 
 ### 🚀 Key Novelties
 This project introduces a Constraint-Aware Procedural Execution Agent that bridges the gap between natural language understanding and logical visual generation.
@@ -48,3 +28,61 @@ The system is designed as an End-to-End Agent, not just a creative tool.
     - Extensibility: The structured Action Graph output can be directly interfaced with robotic operating systems (ROS) or IoT-enabled smart kitchens.
 
     - Multimodal Alignment: Synchronizes textual instructions, logical timelines, and visual evidence into a single cohesive output.
+
+
+
+### 🏗️ System Architecture
+1. Instruction Parsing: LLM-based extraction of actions and resources.
+
+2. Logic Engine: DAG construction and resource conflict resolution.
+
+3. Keyframe Stage: Stable Diffusion v1.5 generating 1st-person POV images.
+
+4. Animation Stage: Stable Video Diffusion (SVD) transforming frames into 14-frame video clips.
+
+5. Final Synthesis: Concatenation of clips into a full procedural demonstration.
+
+### 🚀 Getting Started
+Prerequisites
+- Python 3.10+
+- NVIDIA GPU with 11GB+ VRAM (e.g., RTX 2080 Ti)
+- OpenAI API Key
+
+<b>Installation<b>
+```Bash
+git clone https://github.com/shinnew9/Constraint-AwareProceduralExecutionAgent.git
+cd CAPEA
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+<b>Usage<b>
+```Bash
+export OPENAI_API_KEY='your_key_here'
+python3 main.py
+```
+
+### 📊 Visual Outputs
+<b>Execution Timeline<b>
+CAPEA generates a visual Gantt-style chart (timeline.png) to show the logical flow of actions.
+<br>
+1st-Person Simulation (Dish: Ramen)
+The final output consists of 5 sequential video clips representing the full "Ramen Preparation" pipeline:
+
+1. Chop Onions (POV)
+2. Boil Water (POV)
+3. Add Noodles (POV)
+4. Fry Egg (POV)
+5. Serve Dish (Final Result)
+
+### 🛠️ Technical Stack
+- Language Models: OpenAI GPT-4o
+- Generative Models: Stable Diffusion v1.5, Stable Video Diffusion (SVD)
+- Logic & Graphics: NetworkX, Matplotlib
+- Video Processing: MoviePy, OpenCV
+
+### 👤 Author
+Yoojin Shin 
+Lehigh University
+Department of Computer Science & Engineering
