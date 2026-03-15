@@ -76,6 +76,27 @@ The final output consists of 5 sequential video clips representing the full "Ram
 
 <br>
 
+
+
+### 📊 Current Project Status (Mid-term Evaluation)
+
+As of March 2026, the **CAPEA** project has successfully implemented the core end-to-end pipeline and is currently entering the domain-specific optimization phase.
+
+| Phase | Milestone | Status | Description |
+| :--- | :--- | :--- | :--- |
+| **Phase 1** | **Logic Engine** | **Completed (100%)** | Natural Instructions → Action Graph (DAG) parsing via LLM. |
+| **Phase 2** | **Constraint Scheduling** | **Completed (100%)** | Resource conflict resolution & Temporal timeline generation. |
+| **Phase 3** | **Generative Pipeline** | **Completed (100%)** | Baseline T2I2V (Text-to-Image-to-Video) flow with POV-consistency. |
+| **Phase 4** | **Data & Domain Adaptation**| **In Progress (30%)** | Dataset acquisition (EPIC-KITCHENS/YouCook2) & LoRA Preprocessing. |
+| **Phase 5** | **System Integration** | **Pending (0%)** | Final integration of Custom LoRA into the production pipeline. |
+
+---
+**Current Focus:** Standardizing the dataset for LoRA Fine-tuning to enhance visual realism and structural consistency of the 1st-person kitchen environment.
+
+
+
+
+
 ### 🛠️ Technical Stack
 - Language Models: OpenAI GPT-4o
 - Generative Models: Stable Diffusion v1.5, Stable Video Diffusion (SVD)
