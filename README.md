@@ -1,6 +1,7 @@
 ## 🍜 CAPEA: Constraint-Aware Procedural Execution Agent
 CAPEA is an advanced AI agent designed to bridge the gap between high-level natural language instructions and logically grounded, multi-stage visual simulations. It doesn't just "generate videos"—it understands constraints, plans resources, and executes a full cooking pipeline from a first-person perspective.
 
+<br>
 
 ### 🚀 Key Novelties
 This project introduces a Constraint-Aware Procedural Execution Agent that bridges the gap between natural language understanding and logical visual generation.
@@ -26,6 +27,7 @@ The system is designed as an End-to-End Agent, not just a creative tool.
     - Extensibility: The structured Action Graph output can be directly interfaced with robotic operating systems (ROS) or IoT-enabled smart kitchens.
     - Multimodal Alignment: Synchronizes textual instructions, logical timelines, and visual evidence into a single cohesive output.
 
+<br>
 
 ### 🏗️ System Architecture
 1. Instruction Parsing: LLM-based extraction of actions and resources.
@@ -34,6 +36,7 @@ The system is designed as an End-to-End Agent, not just a creative tool.
 4. Animation Stage: Stable Video Diffusion (SVD) transforming frames into 14-frame video clips.
 5. Final Synthesis: Concatenation of clips into a full procedural demonstration.
 
+<br>
 
 ### 🚀 Getting Started
 Prerequisites
@@ -56,6 +59,8 @@ export OPENAI_API_KEY='your_key_here'
 python3 main.py
 ```
 
+<br>
+
 ### 📊 Visual Outputs
 <b>Execution Timeline<b>
 CAPEA generates a visual Gantt-style chart (timeline.png) to show the logical flow of actions.
@@ -69,6 +74,7 @@ The final output consists of 5 sequential video clips representing the full "Ram
 4. Fry Egg (POV)
 5. Serve Dish (Final Result)
 
+<br>
 
 ### 🛠️ Technical Stack
 - Language Models: OpenAI GPT-4o
@@ -76,6 +82,7 @@ The final output consists of 5 sequential video clips representing the full "Ram
 - Logic & Graphics: NetworkX, Matplotlib
 - Video Processing: MoviePy, OpenCV
 
+<br>
 
 ### 👤 Author
 Yoojin Shin 
