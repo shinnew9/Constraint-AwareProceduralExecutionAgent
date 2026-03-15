@@ -1,141 +1,99 @@
 import torch
-# 
-# import os
-# import gc
-# from PIL import Image
-# from diffusers import StableDiffusionPipeline, StableVideoDiffusionPipeline
-# from diffusers.utils import export_to_video
-
-# def simulate_video_rendering(schedule: list):
-#     device = "cuda"
-#     output_frames_dir = "output_frames"
-#     output_videos_dir = "output_videos"
-    
-#     if not os.path.exists(output_frames_dir): os.makedirs(output_frames_dir)
-#     if not os.path.exists(output_videos_dir): os.makedirs(output_videos_dir)
-
-#     # --- STAGE 1: T2I ---
-#     print("\n--- [STAGE 1] Text-to-Image ---")
-#     t2i_pipe = StableDiffusionPipeline.from_pretrained(
-#         "runwayml/stable-diffusion-v1-5", 
-#         torch_dtype=torch.float16
-#     ).to(device)
-    
-#     action_prompts = {
-#         "chop onions": "chopping onions on wooden board, cinematic",
-#         "boil water": "water boiling in a pot, cinematic",
-#         "cook noodles": "noodles cooking in broth, cinematic",
-#         "fry egg": "frying egg in a pan, cinematic"
-#     }
-
-#     for step in schedule:
-#         prompt = action_prompts.get(step['action'], step['action'])
-#         image = t2i_pipe(prompt, num_inference_steps=25).images[0]
-#         image.save(f"{output_frames_dir}/step_{step['id']}.png")
-
-#     # --- 메모리 완전 청소 ---
-#     del t2i_pipe
-#     gc.collect()
-#     torch.cuda.empty_cache()
-#     print("\n[System] T2I cleared. Loading SVD with Sequential Offload...")
-
-#     # --- STAGE 2: I2V ---
-#     # AttributeError 방지를 위해 가장 안정적인 로드 방식 사용
-#     i2v_pipe = StableVideoDiffusionPipeline.from_pretrained(
-#         "stabilityai/stable-video-diffusion-img2vid",
-#         torch_dtype=torch.float16,
-#         variant="fp16"
-#     ) # .to(device)를 여기서 하지 마세요! 아래 offload 함수가 알아서 처리합니다.
-
-#     # [핵심 최적화] AttributeError를 피하면서 메모리를 아끼는 가장 강력한 함수
-#     i2v_pipe.enable_sequential_cpu_offload()
-
-#     for step in schedule:
-#         # 해상도를 448x448로 유지하여 안전하게 생성
-#         image = Image.open(f"{output_frames_dir}/step_{step['id']}.png").convert("RGB").resize((448, 448))
-        
-#         print(f"\n >> Animating Step {step['id']} (Sequential Mode)...")
-        
-#         with torch.inference_mode():
-#             # decode_chunk_size=2는 대부분의 환경에서 에러 없이 돌아갑니다.
-#             output = i2v_pipe(
-#                 image, 
-#                 decode_chunk_size=2,
-#                 num_frames=14,
-#                 motion_bucket_id=127,
-#                 fps=7
-#             )
-#             frames = output.frames[0]
-        
-#         export_to_video(frames, f"{output_videos_dir}/step_{step['id']}.mp4", fps=7)
-        
-#     print("\n--- ALL DONE! SUCCESS ---")
-
-
-
-from diffusers import StableDiffusionPipeline
 import os
+import gc
+from PIL import Image
+from diffusers import StableDiffusionPipeline, StableVideoDiffusionPipeline
+from diffusers.utils import export_to_video
 
 def simulate_video_rendering(schedule: list):
     """
-    T2I Stage: Converts scheduled actions into high-quality keyframes.
-    This is the first half of the T2I2V pipeline.
+    Executes the full generative pipeline: T2I (Keyframes) followed by I2V (Animation).
+    Optimized for systems with 11GB VRAM (e.g., RTX 2080 Ti).
     """
-    print("\n--- Initializing Text-to-Image Engine (SD v1.5) ---")
+    device = "cuda"
+    output_frames_dir = "output_frames"
+    output_videos_dir = "output_videos"
     
-    # 1. Load the model using FP16 to save VRAM (Critical for 11GB GPUs)
-    model_id = "runwayml/stable-diffusion-v1-5"
+    # Create directories if they do not exist
+    if not os.path.exists(output_frames_dir): os.makedirs(output_frames_dir)
+    if not os.path.exists(output_videos_dir): os.makedirs(output_videos_dir)
+
+    # ==========================================
+    # STAGE 1: Text-to-Image (Keyframe Generation)
+    # ==========================================
+    print("\n--- [STAGE 1] Initializing T2I Engine (Stable Diffusion v1.5) ---")
     
-    try:
-        pipeline = StableDiffusionPipeline.from_pretrained(
-            model_id, 
-            torch_dtype=torch.float16,
-            safety_checker=None # Speed up and save memory
-        )
-        pipeline.to("cuda")
-        
-        # 2. Optimization for 2080 Ti: Memory efficient attention
-        pipeline.enable_attention_slicing()
-        
-    except Exception as e:
-        print(f"Error loading model: {e}")
-        return
+    # Load T2I model in FP16 for memory efficiency
+    t2i_pipe = StableDiffusionPipeline.from_pretrained(
+        "runwayml/stable-diffusion-v1-5", 
+        torch_dtype=torch.float16,
+        safety_checker=None
+    ).to(device)
 
-    # Create directory for output frames
-    output_dir = "output_frames"
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    print(f"Pipeline initialized. Generating {len(schedule)} keyframes...\n")
-
-    # 업데이트된 부분: 프롬프트를 더 구체적으로 만들어주는 딕셔너리
+    # Define first-person perspective (POV) prompts for each action
     action_prompts = {
-        "chop onions": "A cinematic close-up shot of chopping onions with a sharp knife on a wooden cutting board, professional cooking photography, 4k, highly detailed",
-        "boil water": "A cinematic close-up shot of boiling water in a clear pot on a stove, professional cooking photography, 4k, highly detailed",
-        "cook noodles": "A cinematic close-up shot of cooking noodles in a pot with broth, professional cooking photography, 4k, highly detailed",
-        "fry egg": "A cinematic close-up shot of frying an egg in a pan, professional cooking photography, 4k, highly detailed"
+        "chop onions": "First-person POV, hands chopping onions on a wooden board, cinematic lighting, 4k",
+        "boil water": "First-person POV, looking down into a pot with boiling water, steam rising, high quality",
+        "add noodles": "First-person POV, putting ramen noodles into a pot of boiling soup, realistic steam",
+        "fry egg": "First-person POV, a sunny side up egg sizzling in a frying pan, close-up shot",
+        "serve dish": "First-person POV, a delicious completed bowl of ramen on a dining table, hero shot, 4k"
     }
 
+    print(f"Generating {len(schedule)} keyframes...")
     for step in schedule:
-        # Konstrukcí a high-quality prompt for the Generative AI
-        # We use the updated action_prompts dictionary to improve the visual result
-        action_description = step['action']
-        prompt = action_prompts.get(action_description, f"A cinematic close-up shot of {action_description}, professional cooking photography, 4k, highly detailed")
+        prompt = action_prompts.get(step['action'], f"First-person POV of {step['action']}")
+        print(f" >> Rendering Keyframe {step['id']}: '{step['action']}'")
         
-        print(f"Rendering Step {step['id']}: '{action_description}'")
-        
-        # 3. Generate the image
-        # num_inference_steps=30 is a good balance between speed and quality
-        with torch.autocast("cuda"):
-            image = pipeline(prompt, num_inference_steps=30).images[0]
-        
-        # Save the result
-        file_path = f"{output_dir}/step_{step['id']}.png"
-        image.save(file_path)
-        print(f"Successfully saved to {file_path}")
+        # Inference using autocast for better performance
+        image = t2i_pipe(prompt, num_inference_steps=30).images[0]
+        image.save(f"{output_frames_dir}/step_{step['id']}.png")
 
-<<<<<<< HEAD
-    print("\n--- T2I Stage Complete: All keyframes are ready in 'output_frames/' ---")
-=======
-    print("\n--- T2I Stage Complete: All keyframes are ready in 'output_frames/' ---")
->>>>>>> dc7531a (step2 -the video generation part)
+    # --- MEMORY MANAGEMENT ---
+    # Delete T2I model and clear cache to free up VRAM for the heavy I2V model
+    del t2i_pipe
+    gc.collect()
+    torch.cuda.empty_cache()
+    print("\n[System] T2I Stage complete. VRAM cleared for Stage 2.")
+
+    # ==========================================
+    # STAGE 2: Image-to-Video (Animation Stage)
+    # ==========================================
+    print("\n--- [STAGE 2] Initializing I2V Engine (Stable Video Diffusion) ---")
+    
+    # Load SVD model
+    i2v_pipe = StableVideoDiffusionPipeline.from_pretrained(
+        "stabilityai/stable-video-diffusion-img2vid",
+        torch_dtype=torch.float16,
+        variant="fp16"
+    )
+    
+    # Crucial optimization for 11GB VRAM: Sequential CPU Offloading
+    i2v_pipe.enable_sequential_cpu_offload()
+
+    for step in schedule:
+        image_path = f"{output_frames_dir}/step_{step['id']}.png"
+        
+        # Resize to 448x448 to prevent OOM errors on 11GB GPUs
+        image = Image.open(image_path).convert("RGB").resize((448, 448))
+        
+        print(f" >> Animating Step {step['id']}: '{step['action']}'...")
+        
+        with torch.inference_mode():
+            # decode_chunk_size=2 reduces memory spikes during video decoding
+            output = i2v_pipe(
+                image, 
+                decode_chunk_size=2, 
+                num_frames=14, 
+                motion_bucket_id=127, 
+                fps=7
+            )
+            frames = output.frames[0]
+            
+        video_path = f"{output_videos_dir}/step_{step['id']}.mp4"
+        export_to_video(frames, video_path, fps=7)
+        print(f" >> Successfully saved video to {video_path}")
+
+    print("\n" + "="*50)
+    print("FULL PIPELINE EXECUTION FINISHED")
+    print("Final result includes keyframes and 1st-person cooking videos.")
+    print("="*50)
