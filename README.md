@@ -76,8 +76,6 @@ The final output consists of 5 sequential video clips representing the full "Ram
 
 <br>
 
-
-
 ### 📊 Current Project Status (Mid-term Evaluation)
 
 As of March 2026, the **CAPEA** project has successfully implemented the core end-to-end pipeline and is currently entering the domain-specific optimization phase.
@@ -93,9 +91,7 @@ As of March 2026, the **CAPEA** project has successfully implemented the core en
 ---
 **Current Focus:** Standardizing the dataset for LoRA Fine-tuning to enhance visual realism and structural consistency of the 1st-person kitchen environment.
 
-
-
-
+<br>
 
 ### 🛠️ Technical Stack
 - Language Models: OpenAI GPT-4o
