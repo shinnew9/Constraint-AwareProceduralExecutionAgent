@@ -1,14 +1,22 @@
+# Data and Models
+data/raw/
+data/processed/
+models/lora/*.safetensors
+
+
 # Generative AI Outputs
 output_frames/
 output_videos/
 *.png
 *.mp4
 
+
 # Python & Environment
 __pycache__/
 *.pyc
 .venv/
 .env
+
 
 # OS specific files
 .DS_store
