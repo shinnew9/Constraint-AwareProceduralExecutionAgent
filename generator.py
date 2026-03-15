@@ -1,4 +1,77 @@
 import torch
+<<<<<<< HEAD
+=======
+import os
+import gc
+from PIL import Image
+from diffusers import StableDiffusionPipeline, StableVideoDiffusionPipeline
+from diffusers.utils import export_to_video
+
+def simulate_video_rendering(schedule: list):
+    device = "cuda"
+    output_frames_dir = "output_frames"
+    output_videos_dir = "output_videos"
+    
+    if not os.path.exists(output_frames_dir): os.makedirs(output_frames_dir)
+    if not os.path.exists(output_videos_dir): os.makedirs(output_videos_dir)
+
+    # --- STAGE 1: T2I ---
+    print("\n--- [STAGE 1] Text-to-Image ---")
+    t2i_pipe = StableDiffusionPipeline.from_pretrained(
+        "runwayml/stable-diffusion-v1-5", 
+        torch_dtype=torch.float16
+    ).to(device)
+    
+    action_prompts = {
+        "chop onions": "chopping onions on wooden board, cinematic",
+        "boil water": "water boiling in a pot, cinematic",
+        "cook noodles": "noodles cooking in broth, cinematic",
+        "fry egg": "frying egg in a pan, cinematic"
+    }
+
+    for step in schedule:
+        prompt = action_prompts.get(step['action'], step['action'])
+        image = t2i_pipe(prompt, num_inference_steps=25).images[0]
+        image.save(f"{output_frames_dir}/step_{step['id']}.png")
+
+    # --- 메모리 완전 청소 ---
+    del t2i_pipe
+    gc.collect()
+    torch.cuda.empty_cache()
+    print("\n[System] T2I cleared. Loading SVD with Sequential Offload...")
+
+    # --- STAGE 2: I2V ---
+    # AttributeError 방지를 위해 가장 안정적인 로드 방식 사용
+    i2v_pipe = StableVideoDiffusionPipeline.from_pretrained(
+        "stabilityai/stable-video-diffusion-img2vid",
+        torch_dtype=torch.float16,
+        variant="fp16"
+    ) # .to(device)를 여기서 하지 마세요! 아래 offload 함수가 알아서 처리합니다.
+
+    # [핵심 최적화] AttributeError를 피하면서 메모리를 아끼는 가장 강력한 함수
+    i2v_pipe.enable_sequential_cpu_offload()
+
+    for step in schedule:
+        # 해상도를 448x448로 유지하여 안전하게 생성
+        image = Image.open(f"{output_frames_dir}/step_{step['id']}.png").convert("RGB").resize((448, 448))
+        
+        print(f"\n >> Animating Step {step['id']} (Sequential Mode)...")
+        
+        with torch.inference_mode():
+            # decode_chunk_size=2는 대부분의 환경에서 에러 없이 돌아갑니다.
+            output = i2v_pipe(
+                image, 
+                decode_chunk_size=2,
+                num_frames=14,
+                motion_bucket_id=127,
+                fps=7
+            )
+            frames = output.frames[0]
+        
+        export_to_video(frames, f"{output_videos_dir}/step_{step['id']}.mp4", fps=7)
+        
+    print("\n--- ALL DONE! SUCCESS ---")
+>>>>>>> dc7531a (step2 -the video generation part)
 from diffusers import StableDiffusionPipeline
 import os
 
@@ -60,4 +133,8 @@ def simulate_video_rendering(schedule: list):
         image.save(file_path)
         print(f"Successfully saved to {file_path}")
 
+<<<<<<< HEAD
     print("\n--- T2I Stage Complete: All keyframes are ready in 'output_frames/' ---")
+=======
+    print("\n--- T2I Stage Complete: All keyframes are ready in 'output_frames/' ---")
+>>>>>>> dc7531a (step2 -the video generation part)
