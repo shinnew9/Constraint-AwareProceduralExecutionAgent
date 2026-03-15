@@ -85,6 +85,6 @@ The final output consists of 5 sequential video clips representing the full "Ram
 <br>
 
 ### 👤 Author
-Yoojin Shin 
-Lehigh University
+Yoojin Shin <br>
+Lehigh University <br>
 Department of Computer Science & Engineering
