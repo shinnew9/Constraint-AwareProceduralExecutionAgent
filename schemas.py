@@ -12,4 +12,3 @@ class ActionNode(BaseModel):
 class ActionGraph(BaseModel):
     title: str = Field(..., description="Title of the cooking project")
     nodes: List[ActionNode] = Field(..., description="List of all execution steps")
-    
