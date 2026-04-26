@@ -1,90 +1,101 @@
-from __future__ import annotations
+from typing import List
 
-from typing import Dict, List, Set
-import networkx as nx
+from capea.schemas import ActionGraph, ValidationIssue, ValidationReport
+from capea.utils import has_cycle
 
-from capea.schemas import ActionGraph, ScheduledStep, ValidationIssue, ValidationReport
-from capea.logic.domain_rules import is_semantically_valid
+
+INVALID_ACTION_TARGETS = {
+    ("boil", "knife"),
+    ("cut", "water"),
+    ("chop", "water"),
+    ("fry", "knife"),
+}
 
 
 class DAGValidator:
-    """Validates graph structure, semantic sanity, resources, and scheduled outputs."""
-
     def __init__(self, graph: ActionGraph):
         self.graph = graph
-        self.nodes = {n.id: n for n in graph.nodes}
+        self.node_ids = set(graph.node_ids())
+        self.node_map = graph.node_map()
 
-    def validate_graph(self) -> ValidationReport:
-        issues: List[ValidationIssue] = []
-        ids = [n.id for n in self.graph.nodes]
+    def validate(self) -> ValidationReport:
+        report = ValidationReport(is_valid=True)
 
-        if len(ids) != len(set(ids)):
-            issues.append(ValidationIssue(level="error", code="DUPLICATE_ID", message="Duplicate node IDs found."))
+        self._check_duplicate_node_ids(report)
+        self._check_missing_edge_nodes(report)
+        self._check_cycles(report)
+        self._check_durations(report)
+        self._check_semantic_sanity(report)
 
-        for node in self.graph.nodes:
-            if not is_semantically_valid(node.action, node.target):
-                issues.append(ValidationIssue(
+        return report
+
+    def _check_duplicate_node_ids(self, report: ValidationReport) -> None:
+        ids = self.graph.node_ids()
+        duplicates = sorted({node_id for node_id in ids if ids.count(node_id) > 1})
+
+        for node_id in duplicates:
+            report.add_issue(
+                ValidationIssue(
                     level="error",
-                    code="SEMANTIC_SANITY_FAIL",
-                    node_id=node.id,
-                    message=f"Nonsense action-target pair: {node.action} {node.target}",
-                ))
-            for dep in node.depends_on:
-                if dep not in self.nodes:
-                    issues.append(ValidationIssue(
+                    code="duplicate_node_id",
+                    message=f"Duplicate node id found: {node_id}",
+                    node_id=node_id,
+                )
+            )
+
+    def _check_missing_edge_nodes(self, report: ValidationReport) -> None:
+        for src, dst in self.graph.edges:
+            if src not in self.node_ids:
+                report.add_issue(
+                    ValidationIssue(
                         level="error",
-                        code="MISSING_DEPENDENCY",
-                        node_id=node.id,
-                        message=f"Node {node.id} depends on missing node {dep}.",
-                    ))
+                        code="missing_edge_source",
+                        message=f"Edge source node does not exist: {src}",
+                        node_id=src,
+                    )
+                )
 
-        G = self._to_networkx()
-        if not nx.is_directed_acyclic_graph(G):
-            issues.append(ValidationIssue(level="error", code="CYCLE", message="Action graph contains a cycle."))
-
-        return ValidationReport(valid=not any(i.level == "error" for i in issues), issues=issues)
-
-    def validate_schedule(self, schedule: List[ScheduledStep]) -> ValidationReport:
-        issues: List[ValidationIssue] = []
-        by_id = {s.id: s for s in schedule}
-
-        # Dependency order check
-        for step in schedule:
-            node = self.nodes.get(step.id)
-            if not node:
-                continue
-            for dep_id in node.depends_on:
-                dep = by_id.get(dep_id)
-                if dep and dep.end > step.start:
-                    issues.append(ValidationIssue(
+            if dst not in self.node_ids:
+                report.add_issue(
+                    ValidationIssue(
                         level="error",
-                        code="DEPENDENCY_VIOLATION",
-                        node_id=step.id,
-                        message=f"Step {step.id} starts before dependency {dep_id} finishes.",
-                    ))
+                        code="missing_edge_target",
+                        message=f"Edge target node does not exist: {dst}",
+                        node_id=dst,
+                    )
+                )
 
-        # Resource overlap check
-        resource_to_steps: Dict[str, List[ScheduledStep]] = {}
-        for step in schedule:
-            resource_to_steps.setdefault(step.resource, []).append(step)
+    def _check_cycles(self, report: ValidationReport) -> None:
+        if has_cycle(self.graph.node_ids(), self.graph.edges):
+            report.add_issue(
+                ValidationIssue(
+                    level="error",
+                    code="cycle_detected",
+                    message="The action graph contains a cycle, so it is not a valid DAG.",
+                )
+            )
 
-        for resource, steps in resource_to_steps.items():
-            ordered = sorted(steps, key=lambda s: s.start)
-            for prev, curr in zip(ordered, ordered[1:]):
-                if curr.start < prev.end:
-                    issues.append(ValidationIssue(
-                        level="error",
-                        code="RESOURCE_CONFLICT",
-                        node_id=curr.id,
-                        message=f"Resource {resource} overlaps between step {prev.id} and {curr.id}.",
-                    ))
-
-        return ValidationReport(valid=not any(i.level == "error" for i in issues), issues=issues)
-
-    def _to_networkx(self) -> nx.DiGraph:
-        G = nx.DiGraph()
+    def _check_durations(self, report: ValidationReport) -> None:
         for node in self.graph.nodes:
-            G.add_node(node.id)
-            for dep in node.depends_on:
-                G.add_edge(dep, node.id)
-        return G
+            if node.duration <= 0:
+                report.add_issue(
+                    ValidationIssue(
+                        level="error",
+                        code="invalid_duration",
+                        message=f"Node duration must be positive, got {node.duration}.",
+                        node_id=node.id,
+                    )
+                )
+
+    def _check_semantic_sanity(self, report: ValidationReport) -> None:
+        for node in self.graph.nodes:
+            pair = (node.action.lower(), node.target.lower())
+            if pair in INVALID_ACTION_TARGETS:
+                report.add_issue(
+                    ValidationIssue(
+                        level="error",
+                        code="semantic_sanity_error",
+                        message=f"Invalid action-target pair: {node.action} {node.target}",
+                        node_id=node.id,
+                    )
+                )
