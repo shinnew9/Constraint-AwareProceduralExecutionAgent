@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "id": "boil_water",
+      "action": "boil",
+      "target": "water",
+      "duration": 4,
+      "resources": ["stove", "pot"]
+    },
+    {
+      "id": "fry_egg",
+      "action": "fry",
+      "target": "egg",
+      "duration": 3,
+      "resources": ["stove", "pan"]
+    }
+  ],
+  "edges": []
+}

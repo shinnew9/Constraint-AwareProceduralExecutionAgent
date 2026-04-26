@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "cut_onion",
+      "action": "cut",
+      "target": "onion",
+      "duration": 2,
+      "resources": ["knife", "cutting_board"]
+    },
+    {
+      "id": "fry_egg",
+      "action": "fry",
+      "target": "egg",
+      "duration": 3,
+      "resources": ["stove", "pan"]
+    },
+    {
+      "id": "toast_bread",
+      "action": "toast",
+      "target": "bread",
+      "duration": 2,
+      "resources": ["toaster"]
+    }
+  ],
+  "edges": [
+    ["cut_onion", "fry_egg"]
+  ]
+}

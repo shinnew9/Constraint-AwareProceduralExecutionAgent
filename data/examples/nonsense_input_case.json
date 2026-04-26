@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "id": "boil_knife",
+      "action": "boil",
+      "target": "knife",
+      "duration": 2,
+      "resources": ["stove", "pot"]
+    },
+    {
+      "id": "cut_water",
+      "action": "cut",
+      "target": "water",
+      "duration": 1,
+      "resources": ["knife"]
+    }
+  ],
+  "edges": []
+}
