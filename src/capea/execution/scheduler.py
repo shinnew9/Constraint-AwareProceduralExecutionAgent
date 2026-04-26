@@ -5,6 +5,7 @@ import networkx as nx
 
 from capea.schemas import ActionGraph, ScheduledStep
 from capea.logic.domain_rules import infer_resource
+from capea.utils import topological_sort
 
 
 def schedule_graph(action_graph: ActionGraph) -> List[ScheduledStep]:

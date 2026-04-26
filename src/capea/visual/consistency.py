@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 from typing import Dict, Any
 
+from capea.utils import stable_seed
+
+seed = stable_seed("onion_1")
 
 class ObjectMemory:
     """Keeps stable visual anchors for objects/resources across generated clips."""
