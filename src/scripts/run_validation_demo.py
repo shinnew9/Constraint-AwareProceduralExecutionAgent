@@ -5,6 +5,7 @@ from capea.schemas import ActionGraph
 from capea.utils import read_json, write_json, ensure_dir, log
 from capea.logic.validator import DAGValidator
 from capea.execution.simulator import ExecutionSimulator
+from capea.evaluation.metrics import evaluate_graph
 
 
 def main():
@@ -15,8 +16,8 @@ def main():
     input_path = sys.argv[1]
 
     log(f"Loading graph from {input_path}")
-    data = read_json(input_path)
-    graph = ActionGraph(**data)
+    graph_data = read_json(input_path)
+    graph = ActionGraph(**graph_data)
 
     log("Running DAG validation")
     validator = DAGValidator(graph)
@@ -27,6 +28,17 @@ def main():
 
     if not report.is_valid:
         print("\nGraph is invalid. Stop before simulation.")
+
+        evaluation = evaluate_graph(
+            graph_data,
+            [],
+            report.model_dump(),
+        )
+
+        print("\n=== Evaluation ===")
+        for key, value in evaluation.items():
+            print(f"{key}: {value}")
+
         return
 
     log("Running execution simulation")
@@ -36,15 +48,28 @@ def main():
     print("\n=== Simulation Result ===")
     print(result)
 
-    # Save schedule result automatically
+    evaluation = evaluate_graph(
+        graph_data,
+        result["schedule"],
+        report.model_dump(),
+    )
+
+    print("\n=== Evaluation ===")
+    for key, value in evaluation.items():
+        print(f"{key}: {value}")
+
+    # Save schedule
     filename = os.path.basename(input_path).replace(".json", "")
-    output_name = f"{filename}_schedule.json"
-
     output_dir = ensure_dir("outputs_json/schedules")
-    output_path = output_dir / output_name
-
+    output_path = output_dir / f"{filename}_schedule.json"
     write_json(result, output_path)
     print(f"\nSaved schedule to: {output_path}")
+
+    # Save evaluation
+    eval_dir = ensure_dir("outputs_json/evaluation")
+    eval_path = eval_dir / f"{filename}_evaluation.json"
+    write_json(evaluation, eval_path)
+    print(f"Saved evaluation to: {eval_path}")
 
 
 if __name__ == "__main__":

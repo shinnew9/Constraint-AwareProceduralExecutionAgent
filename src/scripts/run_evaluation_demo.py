@@ -1,7 +1,7 @@
 import glob
 
 from capea.utils import read_json
-from capea.evaluation.metrics import constraint_violation_rate
+from capea.evaluation.metrics import constraint_violation_rate, evaluate_graph
 
 
 def main():
@@ -13,8 +13,12 @@ def main():
         results.append(data)
 
     rate = constraint_violation_rate(results)
+    evaluation = evaluate_graph(graph_data, result["schedule"], report)
 
     print("\n=== Evaluation ===")
+    for k, v in evaluation.items():
+        print(f"{k}: {v}")
+
     print(f"Constraint Violation Rate: {rate:.2f}")
 
 
