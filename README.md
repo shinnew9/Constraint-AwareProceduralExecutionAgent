@@ -181,6 +181,11 @@ CAPEA addresses this limitation by enforcing execution constraints <strong>befor
   <li>Generate keyframes and compose procedural videos</li>
 </ul>
 
+<p align="center">
+  <img src="pipeline.png" width="700">
+</p>
+
+
 <hr>
 
 <h2>📊 Data Source</h2>
