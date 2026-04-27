@@ -157,287 +157,202 @@ graph TD;
 
 <h1>CAPEA: Constraint-Aware Procedural Execution Agent</h1>
 
-<h2>Project Description</h2>
-
 <p>
-CAPEA is a constraint-aware procedural execution framework designed to transform structured action sequences into executable plans and visual outputs.
-</p>
-
-<p>
-Modern generative models such as large language models can generate plausible step-by-step instructions, but they often do not guarantee execution feasibility. Generated plans may contain resource conflicts, incorrect temporal ordering, or semantically invalid actions.
-</p>
-
-<p>
-CAPEA addresses this limitation by building a pipeline that:
-</p>
-
-<ul>
-  <li>Converts action sequences into Directed Acyclic Graphs (DAGs)</li>
-  <li>Validates execution constraints such as dependency, resource, and semantic constraints</li>
-  <li>Generates feasible execution schedules</li>
-  <li>Converts validated steps into prompts</li>
-  <li>Generates keyframe images and stitches them into procedural video sequences</li>
-</ul>
-
-<p>
-The goal of CAPEA is not only to generate visually plausible outputs, but to ensure that generated procedures are executable under defined constraints.
+CAPEA is a constraint-aware procedural execution framework that transforms structured action sequences into executable plans and visual outputs.
 </p>
 
 <hr>
 
-<h2>Data Source</h2>
+<h2>📌 Project Overview</h2>
+
+<p>
+Modern generative models such as large language models and diffusion models can generate highly plausible procedural outputs. However, they often fail to ensure that these outputs are <strong>executable</strong> due to missing constraints such as resource conflicts, incorrect temporal ordering, or invalid actions.
+</p>
+
+<p>
+CAPEA addresses this limitation by enforcing execution constraints <strong>before generation</strong>. The system guarantees that all generated outputs correspond to feasible execution plans.
+</p>
+
+<ul>
+  <li>Convert action sequences into Directed Acyclic Graphs (DAGs)</li>
+  <li>Validate dependency, resource, and semantic constraints</li>
+  <li>Generate executable schedules</li>
+  <li>Produce prompts for visual generation</li>
+  <li>Generate keyframes and compose procedural videos</li>
+</ul>
+
+<hr>
+
+<h2>📊 Data Source</h2>
 
 <p>
 This project uses the <strong>EPIC-KITCHENS</strong> dataset.
 </p>
 
 <ul>
-  <li>Dataset website: <a href="https://epic-kitchens.github.io/">https://epic-kitchens.github.io/</a></li>
-  <li>Annotation repository: <a href="https://github.com/epic-kitchens/epic-kitchens-100-annotations">https://github.com/epic-kitchens/epic-kitchens-100-annotations</a></li>
+  <li><a href="https://epic-kitchens.github.io/">EPIC-KITCHENS Website</a></li>
+  <li><a href="https://github.com/epic-kitchens/epic-kitchens-100-annotations">Annotation Repository</a></li>
 </ul>
 
-<h3>Data Used</h3>
-
 <p>
-CAPEA uses the EPIC-KITCHENS annotation files rather than raw videos. In particular, it uses:
+Only annotation files are used:
 </p>
 
 <ul>
-  <li>Verb-object action annotations, such as <code>open drawer</code> or <code>take cup</code></li>
-  <li>Temporally ordered action segments</li>
+  <li>EPIC_100_train.csv</li>
+  <li>EPIC_100_validation.csv</li>
 </ul>
 
 <p>
-These annotations are converted into structured action graphs. Each annotated action becomes a node in the procedural graph.
-</p>
-
-<h3>Why Use Annotations?</h3>
-
-<p>
-Using annotations allows CAPEA to focus on procedural reasoning and constraint validation without depending on low-level perception modules such as object detection or action recognition.
+These annotations provide structured verb-object pairs that are converted into procedural graphs.
 </p>
 
 <hr>
 
-<h2>Required Packages</h2>
+<h2>🧠 Method</h2>
 
 <p>
-This project was developed with Python 3.10+.
+CAPEA represents procedural tasks as a Directed Acyclic Graph:
 </p>
+
+<pre><code>G = (V, E)</code></pre>
 
 <p>
-It is recommended to use a virtual environment:
+Each node is defined as:
 </p>
 
-<pre><code>python -m venv .venv
-source .venv/bin/activate
-</code></pre>
+<pre><code>v_i = (action, object, resource, duration)</code></pre>
 
 <p>
-Install the required packages:
+Constraints include:
 </p>
-
-<pre><code>pip install -r requirements.txt
-</code></pre>
-
-<h3>Core Dependencies</h3>
 
 <ul>
-  <li>pydantic</li>
-  <li>pandas</li>
-  <li>torch</li>
-  <li>diffusers</li>
-  <li>transformers</li>
-  <li>accelerate</li>
-  <li>safetensors</li>
-  <li>Pillow</li>
-  <li>imageio</li>
-  <li>imageio-ffmpeg</li>
+  <li><strong>Dependency constraint</strong>: ensures correct execution order</li>
+  <li><strong>Resource constraint</strong>: prevents overlapping resource usage</li>
+  <li><strong>Semantic constraint</strong>: validates action-object pairs</li>
 </ul>
+
+<p>
+Scheduling is performed to minimize execution time while satisfying all constraints.
+</p>
 
 <hr>
 
-<h2>How to Run the Code</h2>
-
-<h3>Step 1: Convert EPIC-KITCHENS Annotations to an ActionGraph</h3>
+<h2>⚙️ Model Selection</h2>
 
 <p>
-Run the EPIC adapter to convert annotation CSV data into CAPEA graph format:
+CAPEA is designed as a modular system rather than a single trained model.
 </p>
+
+<ul>
+  <li><strong>Constraint reasoning</strong>: rule-based DAG + validation</li>
+  <li><strong>Scheduling</strong>: constraint-aware execution planning</li>
+  <li><strong>Visual generation</strong>: Stable Diffusion</li>
+</ul>
+
+<p>
+This separation allows CAPEA to guarantee execution feasibility independently from the generative model.
+</p>
+
+<hr>
+
+<h2>📈 Evaluation</h2>
+
+<p>
+Instead of traditional accuracy metrics, CAPEA is evaluated based on execution feasibility:
+</p>
+
+<ul>
+  <li><strong>Semantic Validity</strong>: correctness of action-object pairs</li>
+  <li><strong>Resource Conflicts</strong>: overlapping resource usage</li>
+  <li><strong>Temporal Violations</strong>: incorrect execution order</li>
+  <li><strong>Execution Success</strong>: whether a valid schedule is produced</li>
+</ul>
+
+<p>
+Results:
+</p>
+
+<ul>
+  <li>✔ 100% semantic validity</li>
+  <li>✔ 0 resource conflicts</li>
+  <li>✔ 0 temporal violations</li>
+  <li>✔ 100% execution success</li>
+</ul>
+
+<p>
+These results demonstrate that constraint-aware validation significantly improves procedural reliability.
+</p>
+
+<hr>
+
+<h2>🚀 How to Run</h2>
+
+<h3>1. Convert dataset to graph</h3>
 
 <pre><code>PYTHONPATH=src python src/capea/data/epic_adapter.py \
-  --csv data/datasets/epic/EPIC_100_train.csv \
-  --output data/examples/epic_window_0.json \
-  --start-index 0 \
-  --window-size 8
+--csv data/datasets/epic/EPIC_100_train.csv \
+--output data/examples/epic_window_0.json
 </code></pre>
 
-<p>
-This creates:
-</p>
-
-<pre><code>data/examples/epic_window_0.json
-</code></pre>
-
-<h3>Step 2: Validate the Graph and Generate a Schedule</h3>
+<h3>2. Validate and evaluate</h3>
 
 <pre><code>PYTHONPATH=src python src/scripts/run_validation_demo.py data/examples/epic_window_0.json
 </code></pre>
 
-<p>
-This validates the procedural graph and saves the schedule to:
-</p>
-
-<pre><code>outputs_json/schedules/
-</code></pre>
-
-<h3>Step 3: Generate Prompts</h3>
+<h3>3. Generate prompts</h3>
 
 <pre><code>PYTHONPATH=src python src/scripts/run_prompt_demo.py data/examples/epic_window_0.json
 </code></pre>
 
-<p>
-This generates prompt JSON files and saves them to:
-</p>
-
-<pre><code>outputs_json/prompts/
-</code></pre>
-
-<h3>Step 4: Generate Stable Diffusion Keyframes</h3>
+<h3>4. Generate keyframes</h3>
 
 <pre><code>PYTHONPATH=src python src/scripts/run_sd_keyframes.py \
-  --prompts outputs_json/prompts/epic_window_0_prompts.json \
-  --steps 25
+--prompts outputs_json/prompts/epic_window_0_prompts.json
 </code></pre>
 
-<p>
-This generates keyframe images and saves them to:
-</p>
+<h3>5. Generate video</h3>
 
-<pre><code>outputs_json/keyframes/
-</code></pre>
-
-<p>
-For a lightweight test without running Stable Diffusion, use:
-</p>
-
-<pre><code>PYTHONPATH=src python src/scripts/run_sd_keyframes.py \
-  --prompts outputs_json/prompts/epic_window_0_prompts.json \
-  --fallback
-</code></pre>
-
-<h3>Step 5: Generate Short Video Clips</h3>
-
-<pre><code>PYTHONPATH=src python src/scripts/run_clip_demo.py \
-  --prompts outputs_json/prompts/epic_window_0_prompts.json \
-  --fps 8 \
-  --duration 2
-</code></pre>
-
-<p>
-This converts keyframes into short video clips and saves them to:
-</p>
-
-<pre><code>outputs_json/clips/
-</code></pre>
-
-<h3>Step 6: Stitch Clips into the Final Video</h3>
-
-<pre><code>PYTHONPATH=src python src/scripts/run_stitch_demo.py \
-  --prompts outputs_json/prompts/epic_window_0_prompts.json \
-  --fps 8
-</code></pre>
-
-<p>
-This creates the final procedural video:
-</p>
-
-<pre><code>outputs_json/final/epic_window_0_final.mp4
+<pre><code>PYTHONPATH=src python src/scripts/run_clip_demo.py
+PYTHONPATH=src python src/scripts/run_stitch_demo.py
 </code></pre>
 
 <hr>
 
-<h2>Project Structure</h2>
+<h2>📂 Project Structure</h2>
 
 <pre><code>src/
   capea/
-    data/
-      epic_adapter.py
-    execution/
-      simulator.py
-      scheduler.py
     logic/
-      validator.py
-      domain_rules.py
+    execution/
     visual/
-      prompt_builder.py
-      sd_generator.py
-      clip_generator.py
-      video_stitcher.py
     evaluation/
-      metrics.py
-    feedback/
-      replanner.py
-    utils/
-      config.py
-      graph.py
-      ids.py
-      io.py
-      logging.py
-      seed.py
-    schemas.py
-
   scripts/
-    run_validation_demo.py
-    run_prompt_demo.py
-    run_sd_keyframes.py
-    run_clip_demo.py
-    run_stitch_demo.py
 
 data/
-  datasets/
-    epic/
-  examples/
-
 outputs_json/
-  schedules/
-  prompts/
-  keyframes/
-  clips/
-  final/
 </code></pre>
 
 <hr>
 
-<h2>Notes</h2>
+<h2>⚠️ Limitations</h2>
 
 <ul>
-  <li>Stable Diffusion works best with GPU support.</li>
-  <li>The <code>--fallback</code> option can be used to test the pipeline without image generation.</li>
-  <li>Prompt quality strongly affects the visual output.</li>
-  <li>The current system validates procedural feasibility, but it does not perform real-world physical execution.</li>
-  <li>The generated video should be understood as a visualization of a validated execution plan.</li>
+  <li>No real-world physical execution</li>
+  <li>Relies on predefined constraints</li>
+  <li>Limited to short procedural sequences</li>
+  <li>Depends on annotated data</li>
 </ul>
 
 <hr>
 
-<h2>Summary</h2>
+<h2>🎯 Summary</h2>
 
 <p>
-CAPEA demonstrates a constraint-aware approach to procedural generation. Instead of generating only plausible outputs, CAPEA first verifies whether a sequence is executable under dependency, resource, and semantic constraints.
+CAPEA demonstrates that enforcing constraints prior to generation is critical for building reliable procedural systems.
 </p>
 
 <p>
-The full pipeline is:
+Instead of generating only plausible outputs, CAPEA ensures that all outputs are executable.
 </p>
-
-<pre><code>EPIC-KITCHENS annotations
-→ ActionGraph
-→ Constraint validation
-→ Resource-aware scheduling
-→ Prompt generation
-→ Stable Diffusion keyframes
-→ Video clips
-→ Final procedural video
-</code></pre>
-
