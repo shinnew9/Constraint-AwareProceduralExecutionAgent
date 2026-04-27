@@ -1,4 +1,4 @@
-## 🍜 CAPEA: Constraint-Aware Procedural Execution Agent
+<!-- ## 🍜 CAPEA: Constraint-Aware Procedural Execution Agent
 CAPEA is an advanced AI agent designed to bridge the gap between high-level natural language instructions and logically grounded, multi-stage visual simulations. It doesn't just "generate videos"—it understands constraints, plans resources, and executes a full cooking pipeline from a first-person perspective.
 
 <br>
@@ -110,3 +110,46 @@ The final output consists of 5 sequential video clips representing the full "Ram
 Yoojin Shin <br>
 Lehigh University <br>
 Department of Computer Science & Engineering
+-->
+
+
+
+# 🍳 CAPEA: Constraint-Aware Procedural Execution Agent
+
+> **A structured generation system that converts natural instructions into executable action graphs under temporal and resource constraints, verifies feasibility via simulation, and visualizes execution.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Framework: PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)](https://pytorch.org/)
+
+## 📖 Overview
+
+With recent advancements in Large Language Models (LLMs) and Diffusion models, text-to-video generation has made significant progress. However, in procedural tasks like "cooking" that require strict causal relationships and physical constraints, models often produce **logical hallucinations** (e.g., using the same burner simultaneously for multiple tasks, or frying uncut ingredients).
+
+**CAPEA** is a bottom-up video generation framework that goes beyond mere "plausibility" to guarantee **"feasibility"** in real-world environments. It parses natural language instructions into structured Directed Acyclic Graphs (DAGs), simulates resource and temporal constraints in advance, and renders only the validated, conflict-free plans into video sequences.
+
+## ✨ Key Features
+
+1. **Instruction Parsing (Language to DAG)**
+   * Converts unstructured natural language recipes into a formal Directed Acyclic Graph (DAG) where nodes are defined as $v_i = (Action, Object, Resource, Duration)$.
+2. **Constraint Validation**
+   * **Dependency Constraint:** Ensures tasks are executed in the correct causal sequence.
+   * **Resource Constraint:** Prevents the simultaneous use of shared resources (e.g., pans, burners).
+   * **Semantic Constraint:** Filters out invalid or impossible action-object pairs.
+3. **Resource-Aware Scheduling**
+   * Assigns timestamps to actions to minimize the overall makespan while strictly adhering to all validated constraints.
+4. **T2I2V Visual Synthesis**
+   * Generates high-quality keyframes based on the validated DAG schedule and renders logically coherent procedural video clips using a video diffusion engine.
+
+## ⚙️ System Pipeline
+
+```mermaid
+graph TD;
+    A[Natural Language Instructions] --> B[LLM DAG Parser];
+    B --> C{Constraint Validator};
+    C -- Dependency/Resource/Semantic --> D[Resource-Aware Scheduler];
+    D --> E[Text-to-Image Keyframe Gen];
+    E --> F[Video Generation Engine];
+    F --> G[Coherent & Executable Video];
+
+
