@@ -7,8 +7,6 @@ models/lora/*.safetensors
 # Generative AI Outputs
 output_frames/
 output_videos/
-timeline.png
-*.png
 *.mp4
 
 
