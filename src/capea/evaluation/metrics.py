@@ -4,12 +4,17 @@ from typing import Iterable, List
 from capea.schemas import ValidationReport
 
 
-def constraint_violation_rate(reports: Iterable[ValidationReport]) -> float:
-    reports = list(reports)
-    if not reports:
-        return 0.0
-    violated = sum(1 for r in reports if not r.valid)
-    return violated / len(reports)
+# def constraint_violation_rate(reports: Iterable[ValidationReport]) -> float:
+#     reports = list(reports)
+#     if not reports:
+#         return 0.0
+#     violated = sum(1 for r in reports if not r.valid)
+#     return violated / len(reports)
+
+def constraint_violation_rate(results):
+    total = len(results)
+    violations = sum(1 for r in results if not r["success"])
+    return violations / total if total > 0 else 0.0
 
 
 def execution_success_rate(results: Iterable[dict]) -> float:
