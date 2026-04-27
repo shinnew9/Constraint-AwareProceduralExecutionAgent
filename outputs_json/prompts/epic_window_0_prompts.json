@@ -1,0 +1,164 @@
+{
+  "source": "data/examples/epic_window_0.json",
+  "schedule": {
+    "success": true,
+    "issues": [],
+    "makespan": 8,
+    "schedule": [
+      {
+        "node_id": "open_door_1",
+        "start_time": 0,
+        "end_time": 1,
+        "resources": []
+      },
+      {
+        "node_id": "turn_on_light_2",
+        "start_time": 1,
+        "end_time": 2,
+        "resources": []
+      },
+      {
+        "node_id": "open_drawer_3",
+        "start_time": 2,
+        "end_time": 3,
+        "resources": []
+      },
+      {
+        "node_id": "take_cup_4",
+        "start_time": 3,
+        "end_time": 4,
+        "resources": []
+      },
+      {
+        "node_id": "open_cupboard_5",
+        "start_time": 4,
+        "end_time": 5,
+        "resources": []
+      },
+      {
+        "node_id": "put_into_cup_6",
+        "start_time": 5,
+        "end_time": 6,
+        "resources": []
+      },
+      {
+        "node_id": "take_container_7",
+        "start_time": 6,
+        "end_time": 7,
+        "resources": []
+      },
+      {
+        "node_id": "put_on_container_8",
+        "start_time": 7,
+        "end_time": 8,
+        "resources": []
+      }
+    ]
+  },
+  "prompts": [
+    {
+      "node_id": "open_door_1",
+      "action": "open",
+      "target": "door",
+      "start_time": 0,
+      "end_time": 1,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, open door, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 185246182,
+      "output_keyframe": "outputs_json/keyframes/open_door_1.png",
+      "output_clip": "outputs_json/clips/open_door_1.mp4"
+    },
+    {
+      "node_id": "turn_on_light_2",
+      "action": "turn-on",
+      "target": "light",
+      "start_time": 1,
+      "end_time": 2,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, turn-on light, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1610425416,
+      "output_keyframe": "outputs_json/keyframes/turn_on_light_2.png",
+      "output_clip": "outputs_json/clips/turn_on_light_2.mp4"
+    },
+    {
+      "node_id": "open_drawer_3",
+      "action": "open",
+      "target": "drawer",
+      "start_time": 2,
+      "end_time": 3,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, open drawer, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 2114394000,
+      "output_keyframe": "outputs_json/keyframes/open_drawer_3.png",
+      "output_clip": "outputs_json/clips/open_drawer_3.mp4"
+    },
+    {
+      "node_id": "take_cup_4",
+      "action": "take",
+      "target": "cup",
+      "start_time": 3,
+      "end_time": 4,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, take cup, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 686593553,
+      "output_keyframe": "outputs_json/keyframes/take_cup_4.png",
+      "output_clip": "outputs_json/clips/take_cup_4.mp4"
+    },
+    {
+      "node_id": "open_cupboard_5",
+      "action": "open",
+      "target": "cupboard",
+      "start_time": 4,
+      "end_time": 5,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, open cupboard, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1863554262,
+      "output_keyframe": "outputs_json/keyframes/open_cupboard_5.png",
+      "output_clip": "outputs_json/clips/open_cupboard_5.mp4"
+    },
+    {
+      "node_id": "put_into_cup_6",
+      "action": "put-into",
+      "target": "cup",
+      "start_time": 5,
+      "end_time": 6,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, put-into cup, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1556287972,
+      "output_keyframe": "outputs_json/keyframes/put_into_cup_6.png",
+      "output_clip": "outputs_json/clips/put_into_cup_6.mp4"
+    },
+    {
+      "node_id": "take_container_7",
+      "action": "take",
+      "target": "container",
+      "start_time": 6,
+      "end_time": 7,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, take container, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1379192795,
+      "output_keyframe": "outputs_json/keyframes/take_container_7.png",
+      "output_clip": "outputs_json/clips/take_container_7.mp4"
+    },
+    {
+      "node_id": "put_on_container_8",
+      "action": "put-on",
+      "target": "container",
+      "start_time": 7,
+      "end_time": 8,
+      "resources": [],
+      "prompt": "top-down POV cooking scene, put-on container, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 74121316,
+      "output_keyframe": "outputs_json/keyframes/put_on_container_8.png",
+      "output_clip": "outputs_json/clips/put_on_container_8.mp4"
+    }
+  ]
+}

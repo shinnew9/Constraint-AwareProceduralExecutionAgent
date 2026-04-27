@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "issues": [],
+  "makespan": 5,
+  "schedule": [
+    {
+      "node_id": "cut_onion",
+      "start_time": 0,
+      "end_time": 2,
+      "resources": [
+        "knife",
+        "cutting_board"
+      ]
+    },
+    {
+      "node_id": "toast_bread",
+      "start_time": 0,
+      "end_time": 2,
+      "resources": [
+        "toaster"
+      ]
+    },
+    {
+      "node_id": "fry_egg",
+      "start_time": 2,
+      "end_time": 5,
+      "resources": [
+        "stove",
+        "pan"
+      ]
+    }
+  ]
+}

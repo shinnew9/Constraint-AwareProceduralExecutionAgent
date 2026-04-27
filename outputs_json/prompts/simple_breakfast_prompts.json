@@ -1,0 +1,85 @@
+{
+  "source": "data/examples/simple_breakfast.json",
+  "schedule": {
+    "success": true,
+    "issues": [],
+    "makespan": 5,
+    "schedule": [
+      {
+        "node_id": "cut_onion",
+        "start_time": 0,
+        "end_time": 2,
+        "resources": [
+          "knife",
+          "cutting_board"
+        ]
+      },
+      {
+        "node_id": "toast_bread",
+        "start_time": 0,
+        "end_time": 2,
+        "resources": [
+          "toaster"
+        ]
+      },
+      {
+        "node_id": "fry_egg",
+        "start_time": 2,
+        "end_time": 5,
+        "resources": [
+          "stove",
+          "pan"
+        ]
+      }
+    ]
+  },
+  "prompts": [
+    {
+      "node_id": "cut_onion",
+      "action": "cut",
+      "target": "onion",
+      "start_time": 0,
+      "end_time": 2,
+      "resources": [
+        "knife",
+        "cutting_board"
+      ],
+      "prompt": "top-down POV cooking scene, cutting onion on a cutting board using knife, cutting_board, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1926782739,
+      "output_keyframe": "outputs_json/keyframes/cut_onion.png",
+      "output_clip": "outputs_json/clips/cut_onion.mp4"
+    },
+    {
+      "node_id": "toast_bread",
+      "action": "toast",
+      "target": "bread",
+      "start_time": 0,
+      "end_time": 2,
+      "resources": [
+        "toaster"
+      ],
+      "prompt": "top-down POV cooking scene, toasting bread using toaster, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 477427596,
+      "output_keyframe": "outputs_json/keyframes/toast_bread.png",
+      "output_clip": "outputs_json/clips/toast_bread.mp4"
+    },
+    {
+      "node_id": "fry_egg",
+      "action": "fry",
+      "target": "egg",
+      "start_time": 2,
+      "end_time": 5,
+      "resources": [
+        "stove",
+        "pan"
+      ],
+      "prompt": "top-down POV cooking scene, frying egg in a pan on the stove using stove, pan, consistent kitchen countertop, same lighting, same camera angle, realistic cooking video frame, high detail, no text, no watermark",
+      "negative_prompt": "inconsistent objects, changing background, distorted hands, extra fingers, blurry, low quality, text, watermark",
+      "seed": 1870884173,
+      "output_keyframe": "outputs_json/keyframes/fry_egg.png",
+      "output_clip": "outputs_json/clips/fry_egg.mp4"
+    }
+  ]
+}

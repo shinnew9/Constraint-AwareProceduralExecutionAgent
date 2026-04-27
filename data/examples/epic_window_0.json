@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "open_door_1",
+      "action": "open",
+      "target": "door",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "door_open_done"
+      ]
+    },
+    {
+      "id": "turn_on_light_2",
+      "action": "turn-on",
+      "target": "light",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "light_turn-on_done"
+      ]
+    },
+    {
+      "id": "open_drawer_3",
+      "action": "open",
+      "target": "drawer",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "drawer_open_done"
+      ]
+    },
+    {
+      "id": "take_cup_4",
+      "action": "take",
+      "target": "cup",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "cup_take_done"
+      ]
+    },
+    {
+      "id": "open_cupboard_5",
+      "action": "open",
+      "target": "cupboard",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "cupboard_open_done"
+      ]
+    },
+    {
+      "id": "put_into_cup_6",
+      "action": "put-into",
+      "target": "cup",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "cup_put-into_done"
+      ]
+    },
+    {
+      "id": "take_container_7",
+      "action": "take",
+      "target": "container",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "container_take_done"
+      ]
+    },
+    {
+      "id": "put_on_container_8",
+      "action": "put-on",
+      "target": "container",
+      "duration": 1,
+      "resources": [],
+      "preconditions": [],
+      "effects": [
+        "container_put-on_done"
+      ]
+    }
+  ],
+  "edges": [
+    [
+      "open_door_1",
+      "turn_on_light_2"
+    ],
+    [
+      "turn_on_light_2",
+      "open_drawer_3"
+    ],
+    [
+      "open_drawer_3",
+      "take_cup_4"
+    ],
+    [
+      "take_cup_4",
+      "open_cupboard_5"
+    ],
+    [
+      "open_cupboard_5",
+      "put_into_cup_6"
+    ],
+    [
+      "put_into_cup_6",
+      "take_container_7"
+    ],
+    [
+      "take_container_7",
+      "put_on_container_8"
+    ]
+  ]
+}

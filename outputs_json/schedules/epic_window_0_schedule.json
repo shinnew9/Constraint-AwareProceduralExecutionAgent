@@ -1,0 +1,55 @@
+{
+  "success": true,
+  "issues": [],
+  "makespan": 8,
+  "schedule": [
+    {
+      "node_id": "open_door_1",
+      "start_time": 0,
+      "end_time": 1,
+      "resources": []
+    },
+    {
+      "node_id": "turn_on_light_2",
+      "start_time": 1,
+      "end_time": 2,
+      "resources": []
+    },
+    {
+      "node_id": "open_drawer_3",
+      "start_time": 2,
+      "end_time": 3,
+      "resources": []
+    },
+    {
+      "node_id": "take_cup_4",
+      "start_time": 3,
+      "end_time": 4,
+      "resources": []
+    },
+    {
+      "node_id": "open_cupboard_5",
+      "start_time": 4,
+      "end_time": 5,
+      "resources": []
+    },
+    {
+      "node_id": "put_into_cup_6",
+      "start_time": 5,
+      "end_time": 6,
+      "resources": []
+    },
+    {
+      "node_id": "take_container_7",
+      "start_time": 6,
+      "end_time": 7,
+      "resources": []
+    },
+    {
+      "node_id": "put_on_container_8",
+      "start_time": 7,
+      "end_time": 8,
+      "resources": []
+    }
+  ]
+}
