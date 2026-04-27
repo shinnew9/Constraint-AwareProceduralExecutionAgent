@@ -20,53 +20,29 @@ DEFAULT_STYLE = (
 )
 
 class PromptBuilder:
-    def __init__(self, graph: ActionGraph, base_seed: int = 42):
-        self.graph = graph
-        self.node_map = graph.node_map()
-        self.base_seed = base_seed
 
-    def build_prompts(self, schedule_result: Dict) -> List[Dict]:
-        prompts = []
+    def build_prompt(self, node):
+        action = node["action"]
+        target = node["target"]
 
-        for step in schedule_result.get("schedule", []):
-            node = self.node_map[step["node_id"]]
+        if action in ["open", "close"]:
+            action_phrase = f"opening a {target} door, hand on handle"
+        elif action in ["cut", "chop"]:
+            action_phrase = f"cutting {target} with a knife, hand holding knife"
+        elif action in ["pour"]:
+            action_phrase = f"pouring into {target}, liquid visible"
+        elif action in ["take"]:
+            action_phrase = f"picking up a {target} with hand"
+        else:
+            action_phrase = f"{action} a {target}"
 
-            template = ACTION_TEMPLATES.get(
-                node.action.lower(),
-                "top-down POV cooking scene, {action} {target}"
-            )
+        prompt = (
+            f"a person {action_phrase}, "
+            f"mid-action, motion visible, "
+            f"realistic kitchen scene, "
+            f"top-down POV, consistent environment, "
+            f"same lighting, same camera angle, "
+            f"high detail, no text, no watermark"
+        )
 
-            base_prompt = template.format(
-                action=node.action,
-                target=node.target,
-            )
-
-            resource_phrase = ""
-            if node.resources:
-                resource_phrase = " using " + ", ".join(node.resources)
-
-            full_prompt = f"{base_prompt}{resource_phrase}, {DEFAULT_STYLE}"
-
-            seed_key = f"{node.id}:{','.join(node.resources)}"
-            seed = stable_seed(seed_key, base_seed=self.base_seed)
-
-            prompts.append(
-                {
-                    "node_id": node.id,
-                    "action": node.action,
-                    "target": node.target,
-                    "start_time": step["start_time"],
-                    "end_time": step["end_time"],
-                    "resources": node.resources,
-                    "prompt": full_prompt,
-                    "negative_prompt": (
-                        "inconsistent objects, changing background, distorted hands, "
-                        "extra fingers, blurry, low quality, text, watermark"
-                    ),
-                    "seed": seed,
-                    "output_keyframe": f"outputs_json/keyframes/{node.id}.png",
-                    "output_clip": f"outputs_json/clips/{node.id}.mp4"
-                }
-            )
-
-        return prompts
+        return prompt
