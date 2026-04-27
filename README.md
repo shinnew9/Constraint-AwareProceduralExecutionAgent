@@ -142,15 +142,16 @@ With recent advancements in Large Language Models (LLMs) and Diffusion models, t
    * Generates high-quality keyframes based on the validated DAG schedule and renders logically coherent procedural video clips using a video diffusion engine.
 
 ## ⚙️ System Pipeline
+-->
 
-```mermaid
+<!--```mermaid
 graph TD;
-    A[Natural Language Instructions] --> B[LLM DAG Parser];
-    B --> C{Constraint Validator};
-    C -- Dependency/Resource/Semantic --> D[Resource-Aware Scheduler];
-    D --> E[Text-to-Image Keyframe Gen];
-    E --> F[Video Generation Engine];
-    F --> G[Coherent & Executable Video];
+    A[Natural Language Instructions] -> B[LLM DAG Parser];
+    B -> C{Constraint Validator};
+    C - Dependency/Resource/Semantic -> D[Resource-Aware Scheduler];
+    D -> E[Text-to-Image Keyframe Gen];
+    E -> F[Video Generation Engine];
+    F -> G[Coherent & Executable Video];
 -->
 
 
