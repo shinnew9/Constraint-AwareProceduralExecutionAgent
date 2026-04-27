@@ -151,7 +151,7 @@ graph TD;
     D --> E[Text-to-Image Keyframe Gen];
     E --> F[Video Generation Engine];
     F --> G[Coherent & Executable Video];
--->
+
 
 
 <h1>CAPEA: Constraint-Aware Procedural Execution Agent</h1>
